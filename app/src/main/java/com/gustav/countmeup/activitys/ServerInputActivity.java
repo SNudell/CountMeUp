@@ -42,7 +42,7 @@ public class ServerInputActivity extends AppCompatActivity {
             System.out.println("number of received counters = " + list.size());
             findViewById(R.id.ConnectionErrorLabel).setVisibility(View.INVISIBLE);
             Intent intent = new Intent(this, CounterListActivity.class);
-            // TODO: save the list into the database
+            startActivity(intent);
         }, error -> {
             errorConnectiongToServer(error);
         });
