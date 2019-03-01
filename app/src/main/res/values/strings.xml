@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CountMeUp</string>
+    <string name="SuggestedIP">192.168.2.120</string>
+    <string name="SuggestedPort">8080</string>
+    <string name="ServerInputLabelText">Input the ip address and port of your server</string>
+    <string name="IPInputHint">Input your servers ip here</string>
+    <string name="PortInputHint">Input the port of your server here</string>
+    <string name="ConnectButtonLabel">Connect</string>
+    <string name="title_activity_counter_list">CounterList</string>
+    <string name="ServerConnectionError">Error connecting to server</string>
+</resources>
