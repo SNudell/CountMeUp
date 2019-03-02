@@ -30,8 +30,8 @@ public class CounterListAdapter extends ArrayAdapter<Counter> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.counter_row, parent, false);
-        TextView nameDisplay = (TextView) rowView.findViewById(R.id.nameDisplay);
-        TextView valueDisplay = (TextView) rowView.findViewById(R.id.valueDisplay);
+        TextView nameDisplay = rowView.findViewById(R.id.nameDisplay);
+        TextView valueDisplay = rowView.findViewById(R.id.valueDisplay);
         nameDisplay.setText(counters.get(position).getName());
         valueDisplay.setText(""+ counters.get(position).get());
         return rowView;
