@@ -16,6 +16,15 @@ public class ToastDisplayer {
         toast.show();
     }
 
+    public static void displayMessage(Context context, String message) {
+        displayMessage(context, message, 1000);
+    }
+
+    public static void displayMessage(Context context, String message, int duration) {
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
+    }
+
     public static class ErrorToaster implements Consumer<VolleyError> {
 
         private Context context;

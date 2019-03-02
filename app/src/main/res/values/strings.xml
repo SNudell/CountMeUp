@@ -23,4 +23,5 @@
     <string name="DeleteButtonHint">Delete the counter</string>
     <string name="DeleteCounterMessage">Are you sure you want to delete</string>
     <string name="ConfirmDelete">Delete</string>
+    <string name="InvalidNameMessage">Name can only contain uppercase lowercase numbers and whitespaces</string>
 </resources>
