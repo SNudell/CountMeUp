@@ -15,4 +15,12 @@
     <string name="IncrementButtonText">+</string>
     <string name="HintForIntervalDisplay">Number to add/subtract</string>
     <string name="DefaultValueForDeltaValue">2</string>
+    <string name="NewCounterAlertMessage">Give your new Counter a name and a starting value</string>
+    <string name="NewCounterNameHint">Name of the counter</string>
+    <string name="NewCounterValueHint">starting value for your counter</string>
+    <string name="CancelButton">Cancel</string>
+    <string name="ConfirmButton">Confirm</string>
+    <string name="DeleteButtonHint">Delete the counter</string>
+    <string name="DeleteCounterMessage">Are you sure you want to delete</string>
+    <string name="ConfirmDelete">Delete</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.gustav.countmeup.activitys;
 
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.gustav.countmeup.R;
 
 import models.Counter;
 import networking.RequestSender;
+import utils.ToastDisplayer;
 
 public class CounterActivity extends AppCompatActivity {
 
@@ -32,12 +34,20 @@ public class CounterActivity extends AppCompatActivity {
         super.onStart();
         hookUpViews();
         initCounter();
+        requestUpdate();
     }
 
     private void hookUpViews() {
         nameView = (TextView) findViewById(R.id.CounterNameDisplay);
         valueView = (TextView) findViewById(R.id.CounterValueDisplay);
         deltaView = (EditText) findViewById(R.id.DeltaValueDisplay);
+    }
+
+    private void requestUpdate() {
+        RequestSender.getInstance(this).getCounter(counter.getName(), newCounter -> {
+            counter = newCounter;
+            updateViews();
+        }, new ToastDisplayer.ErrorToaster(this));
     }
 
     private void initCounter() {
@@ -61,7 +71,7 @@ public class CounterActivity extends AppCompatActivity {
         sender.incrementCounter(counter, deltaValue,
                 responseCounter -> {
                     this.counter = responseCounter;
-                    System.out.println("response counter = "+ counter.getName() +": "+counter.get());
+                    System.out.println("response counter = " + counter.getName() + ": " + counter.get());
                     updateViews();
                 },
                 error -> {
@@ -81,16 +91,30 @@ public class CounterActivity extends AppCompatActivity {
         sender.decrementCounter(counter, deltaValue,
                 responseCounter -> {
                     this.counter = responseCounter;
-                    System.out.println("response counter = "+ counter.getName() +": "+counter.get());
+                    System.out.println("response counter = " + counter.getName() + ": " + counter.get());
                     updateViews();
                 },
                 error -> {
-                    System.out.println(error);
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(this, "error", duration);
-                    toast.show();
+                    ToastDisplayer.displayError(this, error);
                 }
         );
+    }
+
+    public void deleteCounter(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String message = getString(R.string.DeleteCounterMessage) + counter.getName() + " ?";
+
+        builder.setMessage(message)
+
+                .setPositiveButton(R.string.ConfirmDelete, (dialog, which) -> {
+                    RequestSender.getInstance(this).deleteCounter(counter, () -> {
+                                System.out.println("closing activity");
+                                finish();
+                            },
+                            new ToastDisplayer.ErrorToaster(this));
+                })
+
+                .setNegativeButton(R.string.CancelButton, null).create().show();
     }
 
 }
