@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -25,9 +24,7 @@ import java.util.List;
 import config.ServerConfig;
 import models.Counter;
 import models.JsonParser;
-import models.responses.CounterResponse;
 import utils.SharedPreferencesInterface;
-import utils.ToastDisplayer;
 
 public class RequestSender {
 
@@ -153,12 +150,12 @@ public class RequestSender {
         addToQueue(createRequest);
     }
 
-    public void deleteCounter(Counter counter, final Completion completion, final Consumer<VolleyError> errorHandler) {
+    public void deleteCounter(Counter counter, final Task task, final Consumer<VolleyError> errorHandler) {
         ServerConfig config = new SharedPreferencesInterface(context).loadServerConfig();
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE,
                 config.getFullCounterEndpoint() + "/" + counter.getName(),
                 string -> {
-                    completion.onComplete();
+                    task.execute();
                 },
                 error -> {
                     errorHandler.accept(error);

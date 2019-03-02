@@ -20,11 +20,14 @@ import java.util.List;
 
 import models.Counter;
 import networking.RequestSender;
+import utils.Repeater;
 
 public class CounterListActivity extends ListActivity {
 
     List<Counter> counters;
     ArrayAdapter<Counter> adapter;
+
+    Repeater repeater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +40,19 @@ public class CounterListActivity extends ListActivity {
         getListView().setAdapter(adapter);
         this.adapter = adapter;
 
-        requestData();
+        startRepeater();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         requestData();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        repeater.terminate();
     }
 
     @Override
@@ -62,6 +71,11 @@ public class CounterListActivity extends ListActivity {
             this.counters.addAll(counters);
             this.dataChanged();
         }, error -> System.out.println(error));
+    }
+
+    private void startRepeater() {
+        this.repeater = new Repeater(() -> requestData(), 1000);
+        repeater.start();
     }
 
     private void dataChanged() {

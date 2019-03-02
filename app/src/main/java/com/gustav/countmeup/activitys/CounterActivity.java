@@ -1,6 +1,7 @@
 package com.gustav.countmeup.activitys;
 
 import android.app.AlertDialog;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.gustav.countmeup.R;
 
 import models.Counter;
 import networking.RequestSender;
+import utils.Repeater;
 import utils.ToastDisplayer;
 
 public class CounterActivity extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class CounterActivity extends AppCompatActivity {
     EditText deltaView;
 
     Counter counter;
+
+    Repeater repeater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +39,19 @@ public class CounterActivity extends AppCompatActivity {
         hookUpViews();
         initCounter();
         requestUpdate();
+        startUpdater();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        repeater.terminate();
     }
 
     private void hookUpViews() {
-        nameView = (TextView) findViewById(R.id.CounterNameDisplay);
-        valueView = (TextView) findViewById(R.id.CounterValueDisplay);
-        deltaView = (EditText) findViewById(R.id.DeltaValueDisplay);
+        nameView = findViewById(R.id.CounterNameDisplay);
+        valueView = findViewById(R.id.CounterValueDisplay);
+        deltaView = findViewById(R.id.DeltaValueDisplay);
     }
 
     private void requestUpdate() {
@@ -48,6 +59,11 @@ public class CounterActivity extends AppCompatActivity {
             counter = newCounter;
             updateViews();
         }, new ToastDisplayer.ErrorToaster(this));
+    }
+
+    private void startUpdater() {
+        repeater = new Repeater(()-> requestUpdate(),1000);
+        repeater.start();
     }
 
     private void initCounter() {
