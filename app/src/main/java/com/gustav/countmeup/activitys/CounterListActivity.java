@@ -39,14 +39,18 @@ public class CounterListActivity extends ListActivity {
         CounterListAdapter adapter = new CounterListAdapter(this, counters);
         getListView().setAdapter(adapter);
         this.adapter = adapter;
-
-        startRepeater();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         requestData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startRepeater();
     }
 
     @Override
