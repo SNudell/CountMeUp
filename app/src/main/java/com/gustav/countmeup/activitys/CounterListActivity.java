@@ -110,7 +110,7 @@ public class CounterListActivity extends ListActivity {
         dialog.setOnShowListener((d) -> {
             Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener( (b) -> {
-                String name = nameInput.getText().toString();
+                String name = nameInput.getText().toString().trim();
                 if (!isValidName(name)) {
                     ToastDisplayer.displayMessage(this, getString(R.string.InvalidNameMessage), 5000);
                     return;
