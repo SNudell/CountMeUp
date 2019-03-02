@@ -1,8 +1,11 @@
 package com.gustav.countmeup.activitys;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.gustav.countmeup.R;
 
@@ -29,6 +32,22 @@ public class CounterListActivity extends ListActivity {
         this.adapter = adapter;
 
         requestData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestData();
+    }
+
+    @Override
+    protected void onListItemClick(ListView list, View view, int position, long id) {
+        super.onListItemClick(list, view, position, id);
+        Intent intent = new Intent(this, CounterActivity.class);
+        Counter counter = counters.get(position);
+        intent.putExtra("counterName", counter.getName());
+        intent.putExtra("counterValue", counter.get());
+        startActivity(intent);
     }
 
     private void requestData() {

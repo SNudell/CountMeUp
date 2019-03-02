@@ -8,4 +8,11 @@
     <string name="ConnectButtonLabel">Connect</string>
     <string name="title_activity_counter_list">CounterList</string>
     <string name="ServerConnectionError">Error connecting to server</string>
+    <string name="preference_file_key">com.gustav.countmeup.PREFERENCE_FILE_KEY</string>
+    <string name="DefaultCounterName">CounterName</string>
+    <string name="DefaultCounterValue">42</string>
+    <string name="DecrementButtonText">-</string>
+    <string name="IncrementButtonText">+</string>
+    <string name="HintForIntervalDisplay">Number to add/subtract</string>
+    <string name="DefaultValueForDeltaValue">2</string>
 </resources>

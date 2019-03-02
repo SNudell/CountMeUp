@@ -24,10 +24,15 @@ public class JsonParser {
         return counters;
     }
 
-    public static Counter parseCounter(JSONObject json) throws JSONException {
-        long value = json.getLong("counterStatus");
-        String name = json.getString("name");
-        return new Counter(value, name);
+    public static Counter parseCounter(JSONObject json) {
+        try {
+            long value = json.getLong("counterStatus");
+            String name = json.getString("name");
+            return new Counter(value, name);
+        } catch (JSONException e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
 }
