@@ -1,11 +1,11 @@
 package com.gustav.countmeup.activitys;
 
 import android.app.AlertDialog;
-import android.os.Handler;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +16,7 @@ import models.Counter;
 import networking.RequestSender;
 import utils.Repeater;
 import utils.ToastDisplayer;
+import utils.ValueVerifier;
 
 public class CounterActivity extends AppCompatActivity {
 
@@ -51,6 +52,10 @@ public class CounterActivity extends AppCompatActivity {
     private void hookUpViews() {
         nameView = findViewById(R.id.CounterNameDisplay);
         valueView = findViewById(R.id.CounterValueDisplay);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            valueView.setAutoSizeTextTypeUniformWithConfiguration(
+                    12, 200, 2, TypedValue.COMPLEX_UNIT_DIP);
+        }
         deltaView = findViewById(R.id.DeltaValueDisplay);
     }
 
@@ -81,8 +86,10 @@ public class CounterActivity extends AppCompatActivity {
 
     // called by incrementButton on click
     public void increment(View view) {
-        String delta = deltaView.getText().toString();
-        long deltaValue = Long.parseLong(delta);
+        long deltaValue = getDelta();
+        if (deltaValue == 0) {
+            return;
+        }
         RequestSender sender = RequestSender.getInstance(this);
         sender.incrementCounter(counter, deltaValue,
                 responseCounter -> {
@@ -101,8 +108,10 @@ public class CounterActivity extends AppCompatActivity {
 
     // called by decrementButton on click
     public void decrement(View view) {
-        String delta = deltaView.getText().toString();
-        long deltaValue = Long.parseLong(delta);
+        long deltaValue = getDelta();
+        if (deltaValue == 0) {
+            return;
+        }
         RequestSender sender = RequestSender.getInstance(this);
         sender.decrementCounter(counter, deltaValue,
                 responseCounter -> {
@@ -123,14 +132,27 @@ public class CounterActivity extends AppCompatActivity {
         builder.setMessage(message)
 
                 .setPositiveButton(R.string.ConfirmDelete, (dialog, which) -> {
+                    repeater.terminate();
                     RequestSender.getInstance(this).deleteCounter(counter, () -> {
                                 System.out.println("closing activity");
                                 finish();
                             },
-                            new ToastDisplayer.ErrorToaster(this));
+                            (error) -> {
+                                ToastDisplayer.displayError(this, error);
+                                repeater.start();
+                            });
                 })
 
                 .setNegativeButton(R.string.CancelButton, null).create().show();
+    }
+
+    private long getDelta() {
+        String delta = deltaView.getText().toString();
+        if (!ValueVerifier.toastIfInvalidDelta(this, delta)) {
+            return 0;
+        }
+        long deltaValue = Long.parseLong(delta);
+        return deltaValue;
     }
 
 }

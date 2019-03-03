@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,7 +23,7 @@ import java.util.List;
 import models.Counter;
 import networking.RequestSender;
 import utils.Repeater;
-import utils.ToastDisplayer;
+import utils.ValueVerifier;
 
 public class CounterListActivity extends ListActivity {
 
@@ -95,6 +96,7 @@ public class CounterListActivity extends ListActivity {
         nameInput.setHint(R.string.NewCounterNameHint);
         EditText valueInput = new EditText(this);
         valueInput.setHint(R.string.NewCounterValueHint);
+        valueInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(nameInput);
@@ -111,11 +113,14 @@ public class CounterListActivity extends ListActivity {
             Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener( (b) -> {
                 String name = nameInput.getText().toString().trim();
-                if (!isValidName(name)) {
-                    ToastDisplayer.displayMessage(this, getString(R.string.InvalidNameMessage), 5000);
+                if (!ValueVerifier.toastIfIsInvalidCounterName(this, name)) {
                     return;
                 }
-                long value = Long.parseLong(valueInput.getText().toString());
+                String initialValue = valueInput.getText().toString();
+                if (!ValueVerifier.toastIfInvalidLong(this, initialValue)) {
+                    return;
+                }
+                long value = Long.parseLong(initialValue);
                 Counter newCounter = new Counter(value, name);
                 RequestSender.getInstance(this).createNewCounter(newCounter, counter -> requestData(), error -> displayToast(error));
                 dialog.dismiss();
@@ -124,13 +129,9 @@ public class CounterListActivity extends ListActivity {
         dialog.show();
     }
 
-    private boolean isValidName(String name) {
-        for (Character c: name.toCharArray()) {
-            if (Character.isLowerCase(c) || Character.isUpperCase(c) || Character.isDigit(c) || Character.isWhitespace(c)){}
-            else {
-                return false;
-            }
-        }
+
+
+    private boolean isValidDelta(String delta) {
         return true;
     }
 

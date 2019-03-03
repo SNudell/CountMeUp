@@ -36,7 +36,6 @@ public class ServerInputActivity extends AppCompatActivity {
             findViewById(R.id.ConnectionErrorLabel).setVisibility(View.INVISIBLE);
             Handler mainHandler = new Handler(this.getMainLooper());
             mainHandler.post(() -> continueToCounterList());
-
         }, error -> {
             errorConnectiongToServer(error);
         });

@@ -24,4 +24,6 @@
     <string name="DeleteCounterMessage">Are you sure you want to delete</string>
     <string name="ConfirmDelete">Delete</string>
     <string name="InvalidNameMessage">Name can only contain uppercase lowercase numbers and whitespaces</string>
+    <string name="NegativeDelta">Delta cannot be less then or equal to 0</string>
+    <string name="DeltaMustBeNumber">Delta must be a small enough number</string>
 </resources>
