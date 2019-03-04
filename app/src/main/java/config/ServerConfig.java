@@ -31,7 +31,7 @@ public class ServerConfig {
     }
 
     public String getServerAddress() {
-        return "http://" + ip + ":" + port;
+        return "https://" + ip + ":" + port;
     }
 
     public String getFullCounterEndpoint() {

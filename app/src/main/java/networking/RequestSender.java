@@ -10,16 +10,24 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.gustav.countmeup.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyStore;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 import config.ServerConfig;
 import models.Counter;
@@ -34,8 +42,8 @@ public class RequestSender {
     Context context;
 
     private RequestSender(Context context) {
-        this.requestQueue = Volley.newRequestQueue(context);
         this.context = context;
+        this.requestQueue = sslQueue();
     }
 
     public static RequestSender getInstance(Context context) {
@@ -184,4 +192,37 @@ public class RequestSender {
         addToQueue(deleteRequest);
     }
 
+    private RequestQueue sslQueue() {
+
+        HurlStack hurlStack = new HurlStack(null, newSslSocketFactory());
+
+
+        RequestQueue queue = Volley.newRequestQueue(context, hurlStack);
+        return queue;
+
+    }
+
+    private SSLSocketFactory newSslSocketFactory() {
+        try {
+            KeyStore trusted = KeyStore.getInstance("BKS");
+            InputStream in = context.getResources().openRawResource(R.raw.countmeup);
+            try {
+                trusted.load(in, "sdgoD923sdingwe".toCharArray());
+            } finally {
+                in.close();
+            }
+
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(trusted);
+
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+
+            SSLSocketFactory sf = context.getSocketFactory();
+            return sf;
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+    }
 }
