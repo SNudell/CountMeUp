@@ -1,7 +1,6 @@
 package com.gustav.countmeup.activitys;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.gustav.countmeup.R;
 
 import java.util.ArrayList;
@@ -23,6 +20,7 @@ import java.util.List;
 import models.Counter;
 import networking.RequestSender;
 import utils.Repeater;
+import utils.ToastDisplayer;
 import utils.ValueVerifier;
 
 public class CounterListActivity extends ListActivity {
@@ -73,15 +71,15 @@ public class CounterListActivity extends ListActivity {
     }
 
     private void requestData() {
-        RequestSender.getInstance(this).getAllCounters(counters -> {
-            this.counters.removeAll(this.counters);
+        RequestSender.getInstance(this).getAllCounters(this, counters -> {
+            this.counters.clear();
             this.counters.addAll(counters);
             this.dataChanged();
-        }, error -> System.out.println(error));
+        }, new ToastDisplayer.ErrorToaster(this));
     }
 
     private void startRepeater() {
-        this.repeater = new Repeater(() -> requestData(), 1000);
+        this.repeater = new Repeater(this::requestData, 1000);
         repeater.start();
     }
 
@@ -108,9 +106,9 @@ public class CounterListActivity extends ListActivity {
                 .setNegativeButton(R.string.CancelButton, null)
                 .setPositiveButton(R.string.ConfirmButton, null);
         // will set the listener to null at first so i can determine when to close the dialog myself
-        Dialog dialog = builder.create();
+        AlertDialog dialog = builder.create();
         dialog.setOnShowListener((d) -> {
-            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             button.setOnClickListener( (b) -> {
                 String name = nameInput.getText().toString().trim();
                 if (!ValueVerifier.toastIfIsInvalidCounterName(this, name)) {
@@ -122,24 +120,11 @@ public class CounterListActivity extends ListActivity {
                 }
                 long value = Long.parseLong(initialValue);
                 Counter newCounter = new Counter(value, name);
-                RequestSender.getInstance(this).createNewCounter(newCounter, counter -> requestData(), error -> displayToast(error));
+                RequestSender.getInstance(this).createNewCounter(this, newCounter, counter -> requestData(), new ToastDisplayer.ErrorToaster(this));
                 dialog.dismiss();
             });
         });
         dialog.show();
-    }
-
-
-
-    private boolean isValidDelta(String delta) {
-        return true;
-    }
-
-    private void displayToast(VolleyError error) {
-        System.out.println(error);
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, "error", duration);
-        toast.show();
     }
 
 }

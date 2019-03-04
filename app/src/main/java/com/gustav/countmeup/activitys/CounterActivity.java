@@ -8,7 +8,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gustav.countmeup.R;
 
@@ -60,14 +59,14 @@ public class CounterActivity extends AppCompatActivity {
     }
 
     private void requestUpdate() {
-        RequestSender.getInstance(this).getCounter(counter.getName(), newCounter -> {
+        RequestSender.getInstance(this).getCounter(this, counter.getName(), newCounter -> {
             counter = newCounter;
             updateViews();
         }, new ToastDisplayer.ErrorToaster(this));
     }
 
     private void startUpdater() {
-        repeater = new Repeater(()-> requestUpdate(),1000);
+        repeater = new Repeater(this::requestUpdate,1000);
         repeater.start();
     }
 
@@ -80,7 +79,7 @@ public class CounterActivity extends AppCompatActivity {
 
     private void updateViews() {
         nameView.setText(counter.getName());
-        valueView.setText("" + counter.get());
+        valueView.setText(String.valueOf(counter.get()));
 
     }
 
@@ -91,18 +90,13 @@ public class CounterActivity extends AppCompatActivity {
             return;
         }
         RequestSender sender = RequestSender.getInstance(this);
-        sender.incrementCounter(counter, deltaValue,
+        sender.incrementCounter(this, counter, deltaValue,
                 responseCounter -> {
                     this.counter = responseCounter;
                     System.out.println("response counter = " + counter.getName() + ": " + counter.get());
                     updateViews();
                 },
-                error -> {
-                    System.out.println(error);
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(this, "error", duration);
-                    toast.show();
-                }
+                error -> ToastDisplayer.displayError(this, error)
         );
     }
 
@@ -113,15 +107,13 @@ public class CounterActivity extends AppCompatActivity {
             return;
         }
         RequestSender sender = RequestSender.getInstance(this);
-        sender.decrementCounter(counter, deltaValue,
+        sender.decrementCounter(this, counter, deltaValue,
                 responseCounter -> {
                     this.counter = responseCounter;
                     System.out.println("response counter = " + counter.getName() + ": " + counter.get());
                     updateViews();
                 },
-                error -> {
-                    ToastDisplayer.displayError(this, error);
-                }
+                error -> ToastDisplayer.displayError(this, error)
         );
     }
 
@@ -133,7 +125,7 @@ public class CounterActivity extends AppCompatActivity {
 
                 .setPositiveButton(R.string.ConfirmDelete, (dialog, which) -> {
                     repeater.terminate();
-                    RequestSender.getInstance(this).deleteCounter(counter, () -> {
+                    RequestSender.getInstance(this).deleteCounter(this, counter, () -> {
                                 System.out.println("closing activity");
                                 finish();
                             },
@@ -151,8 +143,7 @@ public class CounterActivity extends AppCompatActivity {
         if (!ValueVerifier.toastIfInvalidDelta(this, delta)) {
             return 0;
         }
-        long deltaValue = Long.parseLong(delta);
-        return deltaValue;
+        return Long.parseLong(delta);
     }
 
 }

@@ -31,19 +31,17 @@ public class ServerInputActivity extends AppCompatActivity {
     }
 
     private void getCountersFromServer() {
-        RequestSender.getInstance(this).getAllCounters(list -> {
+        RequestSender.getInstance(this).getAllCounters(this, list -> {
             System.out.println("number of received counters = " + list.size());
             findViewById(R.id.ConnectionErrorLabel).setVisibility(View.INVISIBLE);
             Handler mainHandler = new Handler(this.getMainLooper());
-            mainHandler.post(() -> continueToCounterList());
-        }, error -> {
-            errorConnectiongToServer(error);
-        });
+            mainHandler.post(this::continueToCounterList);
+        }, this::errorConnectiongToServer);
     }
 
     private void errorConnectiongToServer(VolleyError e) {
         findViewById(R.id.ConnectionErrorLabel).setVisibility(View.VISIBLE);
-        System.out.println(e);
+        System.out.println("error connecting to server " + e);
     }
 
     private void configureServerAddress() {

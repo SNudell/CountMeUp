@@ -30,7 +30,8 @@ public class JsonParser {
             String name = json.getString("name");
             return new Counter(value, name);
         } catch (JSONException e) {
-            System.out.println(e);
+            System.out.println("couldn't parse json into counter " + json);
+            System.out.println("error was " + e);
             return null;
         }
     }

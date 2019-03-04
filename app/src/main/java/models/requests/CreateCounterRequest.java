@@ -1,5 +1,6 @@
 package models.requests;
 
+@SuppressWarnings("unused")
 public class CreateCounterRequest {
     // the name the counter gets
     private String name;

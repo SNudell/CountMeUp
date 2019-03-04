@@ -4,9 +4,6 @@ public class ServerConfig {
 
     private String ip;
     private String port;
-    private String counterEndpoint = "/counter";
-    private String incrementEndpoint = "/increment";
-    private String decrementEndpoint = "/decrement";
 
     public ServerConfig(String ip, String port) {
         this.ip = ip;
@@ -22,27 +19,22 @@ public class ServerConfig {
         return port;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public String getServerAddress() {
+    private String getServerAddress() {
         return "https://" + ip + ":" + port;
     }
 
     public String getFullCounterEndpoint() {
-        return getServerAddress()+counterEndpoint;
+        String counterEndpoint = "/counter";
+        return getServerAddress()+ counterEndpoint;
     }
 
     public String getFullIncrementEndpoint() {
-        return getFullCounterEndpoint()+incrementEndpoint;
+        String incrementEndpoint = "/increment";
+        return getFullCounterEndpoint()+ incrementEndpoint;
     }
 
     public String getFullDecrementEndpoint() {
-        return getFullCounterEndpoint()+decrementEndpoint;
+        String decrementEndpoint = "/decrement";
+        return getFullCounterEndpoint()+ decrementEndpoint;
     }
 }

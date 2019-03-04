@@ -2,6 +2,7 @@ package models;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+@SuppressWarnings("unused")
 public class Counter {
 
     private final AtomicLong counter;

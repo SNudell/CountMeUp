@@ -3,6 +3,7 @@ package models.responses;
 
 import models.Counter;
 
+@SuppressWarnings("unused")
 public class CounterResponse {
     private long counterStatus;
     private String name;

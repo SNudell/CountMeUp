@@ -6,10 +6,10 @@ import networking.Task;
 
 public class Repeater {
 
-    Task task;
-    int delay;
-    Handler handler;
-    Runnable runnable;
+    private Task task;
+    private int delay;
+    private Handler handler;
+    private Runnable runnable;
 
     public Repeater(Task t, int delay) {
         this.task = t;

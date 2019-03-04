@@ -6,10 +6,9 @@ import com.gustav.countmeup.R;
 
 public class ValueVerifier {
 
-    public static boolean isValidCounterName(String name) {
+    private static boolean isValidCounterName(String name) {
         for (Character c : name.toCharArray()) {
-            if (Character.isLowerCase(c) || Character.isUpperCase(c) || Character.isDigit(c) || Character.isWhitespace(c)) {
-            } else {
+            if (!isAllowedCharacter(c)) {
                 return false;
             }
         }
@@ -24,9 +23,9 @@ public class ValueVerifier {
         return true;
     }
 
-    public static boolean isValidLong(String number) {
+    private static boolean isValidLong(String number) {
         try {
-            long value = Long.parseLong(number);
+            Long.parseLong(number);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -34,15 +33,11 @@ public class ValueVerifier {
     }
 
     public static boolean toastIfInvalidDelta(Context context, String number) {
-        if (!toastIfInvalidLong(context, number)) {
-            return false;
+        if (toastIfInvalidLong(context, number)) {
+            long deltaValue = Long.parseLong(number);
+            return deltaValue > 0;
         }
-        long deltaValue = Long.parseLong(number);
-        if (deltaValue <= 0) {
-            ToastDisplayer.displayMessage(context, context.getString(R.string.NegativeDelta), 5000);
-            return false;
-        }
-        return true;
+        return false;
     }
 
     public static boolean toastIfInvalidLong(Context context, String number) {
@@ -51,5 +46,9 @@ public class ValueVerifier {
             return false;
         }
         return true;
+    }
+
+    private static boolean isAllowedCharacter(char c) {
+        return Character.isLowerCase(c) || Character.isUpperCase(c) || Character.isDigit(c) || Character.isWhitespace(c);
     }
 }

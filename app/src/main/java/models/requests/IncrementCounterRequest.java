@@ -1,5 +1,6 @@
 package models.requests;
 
+@SuppressWarnings("unused")
 public class IncrementCounterRequest {
     private String name;
     private long increment;
