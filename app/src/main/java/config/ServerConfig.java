@@ -20,7 +20,7 @@ public class ServerConfig {
     }
 
     private String getServerAddress() {
-        return "https://" + ip + ":" + port;
+        return "http://" + ip + ":" + port;
     }
 
     public String getFullCounterEndpoint() {
